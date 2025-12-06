@@ -1,0 +1,244 @@
+Daily News AI Assistant - Complete Project Structure
+=====================================================
+
+📁 Project Root
+│
+├── 🚀 GETTING STARTED
+│   ├── INDEX.md                    ← START HERE! Complete navigation guide
+│   ├── GETTING_STARTED.md          ← Beginner's step-by-step guide
+│   ├── QUICKSTART.md               ← 5-minute quick start
+│   └── README.md                   ← Main documentation
+│
+├── 🔧 SETUP & CONFIGURATION
+│   ├── setup.sh                    ← Automated setup script (Linux/Mac)
+│   ├── .env.example                ← Environment variables template
+│   ├── requirements.txt            ← Python dependencies
+│   ├── test_setup.py               ← Validate your setup
+│   └── init_sample_data.py         ← Load sample feeds & topics
+│
+├── 💻 CORE APPLICATION (Python)
+│   ├── app.py                      ← Flask routes & endpoints
+│   │   ├── / (dashboard)
+│   │   ├── /refresh_news (trigger AI processing)
+│   │   ├── /status (check processing status)
+│   │   ├── /download_pdf/<id>
+│   │   ├── /delete_article/<id>
+│   │   ├── /admin/feeds (manage RSS feeds)
+│   │   └── /admin/topics (manage topics)
+│   │
+│   ├── database.py                 ← SQLAlchemy models
+│   │   ├── Feed (RSS feeds)
+│   │   ├── Topic (scoring topics)
+│   │   └── Article (news articles)
+│   │
+│   ├── services.py                 ← Business logic & AI
+│   │   ├── NewsService class
+│   │   ├── fetch_and_process_news()
+│   │   ├── analyze_article() (AWS Bedrock)
+│   │   └── _extract_content() (web scraping)
+│   │
+│   └── pdf_generator.py            ← PDF generation
+│       └── generate_pdf(article)
+│
+├── 🎨 FRONTEND (HTML/CSS/JS)
+│   └── templates/
+│       ├── base.html               ← Base layout + navigation
+│       ├── dashboard.html          ← Main article view
+│       ├── admin_feeds.html        ← RSS feed management
+│       └── admin_topics.html       ← Topic management
+│
+├── 📦 STATIC FILES
+│   └── static/
+│       ├── README.txt              ← Static files guide
+│       └── frb_sf_logo.jpg         ← Logo (optional)
+│
+├── 📚 DOCUMENTATION
+│   ├── PROJECT_OVERVIEW.md         ← Architecture & design
+│   ├── DEPLOYMENT.md               ← Production deployment
+│   ├── TROUBLESHOOTING.md          ← Common issues & solutions
+│   └── PROJECT_STRUCTURE.txt       ← This file
+│
+├── 🗄️ DATABASE (Auto-generated)
+│   └── news_assistant.db           ← SQLite database
+│
+└── 🔒 CONFIGURATION
+    ├── .env                        ← Your AWS credentials (DO NOT COMMIT!)
+    └── .gitignore                  ← Git ignore rules
+
+
+TECHNOLOGY STACK
+================
+
+Backend:
+  • Python 3.10+
+  • Flask (Web Framework)
+  • SQLAlchemy (ORM)
+  • Boto3 (AWS SDK)
+  • Feedparser (RSS)
+  • BeautifulSoup4 (Scraping)
+  • ReportLab (PDF)
+
+Frontend:
+  • HTML5 + CSS3
+  • Bootstrap 5
+  • JavaScript
+  • Bootstrap Icons
+
+AI/ML:
+  • AWS Bedrock
+  • Amazon Nova Pro v1:0
+
+Database:
+  • SQLite (Development)
+  • PostgreSQL/MySQL (Production)
+
+
+KEY FEATURES
+============
+
+✅ RSS Feed Aggregation
+✅ AI-Powered Analysis (AWS Bedrock)
+✅ Smart Content Extraction
+✅ Topic-Based Scoring (0-100)
+✅ Intelligent Filtering (>75 threshold)
+✅ Auto-Cleanup (24-hour retention)
+✅ Professional Dashboard
+✅ PDF Export
+✅ Real-time Processing Status
+✅ Admin Panels
+
+
+QUICK START COMMANDS
+====================
+
+Setup:
+  ./setup.sh                        # Automated setup
+  python test_setup.py              # Verify setup
+  python init_sample_data.py        # Load sample data
+
+Run:
+  source venv/bin/activate          # Activate environment
+  python app.py                     # Start application
+
+Access:
+  http://localhost:5000             # Dashboard
+  http://localhost:5000/admin/feeds # Manage feeds
+  http://localhost:5000/admin/topics # Manage topics
+
+
+WORKFLOW
+========
+
+1. User clicks "Refresh News"
+2. System fetches RSS feeds
+3. For each article:
+   - Extract content (RSS or scrape)
+   - Send to AWS Bedrock for AI analysis
+   - Receive summary + topic scores
+   - Save if any score > 75
+4. Display on dashboard
+5. User can export PDF or delete
+
+
+FILE SIZES (Approximate)
+========================
+
+app.py                 ~350 lines
+services.py            ~280 lines
+database.py            ~80 lines
+pdf_generator.py       ~100 lines
+templates/base.html    ~150 lines
+templates/dashboard.html ~120 lines
+
+Total: ~3,600+ lines of code
+
+
+COST ESTIMATES
+==============
+
+AWS Bedrock:
+  • ~$0.001 per article
+  • 100 articles/day = ~$3/month
+  • 1000 articles/day = ~$30/month
+
+Infrastructure (Production):
+  • VPS: $6-15/month
+  • AWS EC2: ~$15/month
+  • Total: $20-100/month
+
+
+DOCUMENTATION GUIDE
+===================
+
+New User?
+  → Start with INDEX.md
+  → Follow GETTING_STARTED.md
+  → Run test_setup.py
+
+Quick Setup?
+  → Read QUICKSTART.md
+  → Run setup.sh
+  → Start app.py
+
+Having Issues?
+  → Check TROUBLESHOOTING.md
+  → Run test_setup.py
+  → Review logs
+
+Understanding Architecture?
+  → Read PROJECT_OVERVIEW.md
+  → Review core .py files
+  → Check database.py
+
+Deploying to Production?
+  → Follow DEPLOYMENT.md
+  → Choose deployment option
+  → Set up monitoring
+
+
+SUPPORT
+=======
+
+Documentation:
+  • INDEX.md - Complete navigation
+  • GETTING_STARTED.md - Step-by-step guide
+  • TROUBLESHOOTING.md - Common issues
+  • README.md - Main documentation
+
+Tools:
+  • python test_setup.py - Diagnostics
+  • Application logs - Error details
+  • AWS CloudWatch - Bedrock logs
+
+Resources:
+  • Flask: https://flask.palletsprojects.com/
+  • AWS Bedrock: https://aws.amazon.com/bedrock/
+  • SQLAlchemy: https://docs.sqlalchemy.org/
+
+
+VERSION INFO
+============
+
+Version: 1.0.0
+Status: Production Ready
+Last Updated: December 2025
+Python: 3.10+
+License: MIT
+
+
+NEXT STEPS
+==========
+
+1. Read INDEX.md for navigation
+2. Follow GETTING_STARTED.md
+3. Run ./setup.sh
+4. Configure .env with AWS credentials
+5. Run python test_setup.py
+6. Run python init_sample_data.py
+7. Start with python app.py
+8. Access http://localhost:5000
+9. Click "Refresh News"
+10. Enjoy your AI-powered news assistant!
+
+
+Happy news reading! 📰🤖

@@ -1,0 +1,136 @@
+{% extends "base.html" %}
+
+{% block title %}Dashboard - Daily News AI Assistant{% endblock %}
+
+{% block content %}
+<div class="header">
+    <div class="d-flex justify-content-between align-items-center">
+        <h1><i class="bi bi-newspaper"></i> News Dashboard</h1>
+        <button class="btn btn-primary" onclick="refreshNews()">
+            <i class="bi bi-arrow-clockwise"></i> Refresh News
+        </button>
+    </div>
+</div>
+
+<div class="container-fluid">
+    {% if articles %}
+        <div class="row">
+            {% for article in articles %}
+            <div class="col-md-6 col-lg-4">
+                <div class="card">
+                    <div class="card-body">
+                        <div class="d-flex justify-content-between align-items-start mb-2">
+                            <span class="badge topic-badge">{{ article.primary_topic }}</span>
+                            <small class="text-muted">{{ article.created_at.strftime('%Y-%m-%d %H:%M') }}</small>
+                        </div>
+                        
+                        <h5 class="card-title">
+                            <a href="{{ article.url }}" target="_blank" class="text-decoration-none text-dark">
+                                {{ article.title }}
+                            </a>
+                        </h5>
+                        
+                        <p class="card-text">
+                            <small class="text-muted">
+                                <i class="bi bi-person"></i> {{ article.author or 'Unknown' }}
+                            </small>
+                        </p>
+                        
+                        <div class="mb-3">
+                            <strong>AI Summary:</strong>
+                            <p class="small">{{ article.summary[:200] }}{% if article.summary|length > 200 %}...{% endif %}</p>
+                        </div>
+                        
+                        <div class="mb-3">
+                            <strong>Topic Scores:</strong>
+                            <div class="mt-2">
+                                {% for topic, score in article.topic_scores_parsed.items() %}
+                                    {% if score > 50 %}
+                                    <span class="badge bg-secondary me-1 mb-1">
+                                        {{ topic }}: {{ score }}
+                                    </span>
+                                    {% endif %}
+                                {% endfor %}
+                            </div>
+                        </div>
+                        
+                        <div class="d-flex justify-content-between">
+                            <a href="{{ url_for('download_pdf', article_id=article.id) }}" class="action-btn pdf">
+                                <i class="bi bi-file-pdf"></i> PDF
+                            </a>
+                            <form method="POST" action="{{ url_for('delete_article', article_id=article.id) }}" style="display:inline;" onsubmit="return confirm('Delete this article?');">
+                                <button type="submit" class="action-btn delete">
+                                    <i class="bi bi-trash"></i> Delete
+                                </button>
+                            </form>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    {% else %}
+        <div class="alert alert-info text-center">
+            <i class="bi bi-info-circle"></i> No articles found. Click "Refresh News" to fetch articles.
+        </div>
+    {% endif %}
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<script>
+    let pollingInterval = null;
+    
+    function refreshNews() {
+        // Show processing banner
+        document.getElementById('processing-banner').classList.add('show');
+        
+        // Call refresh endpoint
+        fetch('/refresh_news', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        })
+        .then(response => response.json())
+        .then(data => {
+            if (data.status === 'started') {
+                // Start polling for status
+                startPolling();
+            } else if (data.status === 'already_running') {
+                startPolling();
+            }
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            document.getElementById('processing-banner').classList.remove('show');
+        });
+    }
+    
+    function startPolling() {
+        if (pollingInterval) {
+            clearInterval(pollingInterval);
+        }
+        
+        pollingInterval = setInterval(checkStatus, 3000);
+    }
+    
+    function checkStatus() {
+        fetch('/status')
+        .then(response => response.json())
+        .then(data => {
+            if (!data.processing) {
+                // Processing complete, reload page
+                clearInterval(pollingInterval);
+                location.reload();
+            }
+        })
+        .catch(error => {
+            console.error('Error checking status:', error);
+        });
+    }
+    
+    // Auto-refresh every 10 seconds (optional)
+    // setInterval(() => location.reload(), 10000);
+</script>
+{% endblock %}

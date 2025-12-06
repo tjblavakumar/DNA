@@ -1,0 +1,102 @@
+{% extends "base.html" %}
+
+{% block title %}Manage Topics - Daily News AI Assistant{% endblock %}
+
+{% block content %}
+<div class="header">
+    <h1><i class="bi bi-tags"></i> Manage Topics</h1>
+</div>
+
+<div class="container-fluid">
+    <div class="row">
+        <div class="col-md-8">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Active Topics</h5>
+                </div>
+                <div class="card-body">
+                    {% if topics %}
+                    <table class="table table-hover">
+                        <thead>
+                            <tr>
+                                <th>Topic Name</th>
+                                <th>Keywords</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for topic in topics %}
+                            <tr>
+                                <td><strong>{{ topic.name }}</strong></td>
+                                <td><small>{{ topic.keywords[:60] }}{% if topic.keywords|length > 60 %}...{% endif %}</small></td>
+                                <td>
+                                    {% if topic.active %}
+                                        <span class="badge bg-success">Active</span>
+                                    {% else %}
+                                        <span class="badge bg-secondary">Inactive</span>
+                                    {% endif %}
+                                </td>
+                                <td>
+                                    <form method="POST" action="{{ url_for('toggle_topic', topic_id=topic.id) }}" style="display:inline;">
+                                        <button type="submit" class="action-btn toggle">
+                                            <i class="bi bi-toggle-on"></i> Toggle
+                                        </button>
+                                    </form>
+                                    <form method="POST" action="{{ url_for('delete_topic', topic_id=topic.id) }}" style="display:inline;" onsubmit="return confirm('Delete this topic?');">
+                                        <button type="submit" class="action-btn delete">
+                                            <i class="bi bi-trash"></i> Delete
+                                        </button>
+                                    </form>
+                                </td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                    {% else %}
+                    <div class="alert alert-info">
+                        <i class="bi bi-info-circle"></i> No topics configured yet. Add your first topic below.
+                    </div>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <div class="col-md-4">
+            <div class="card">
+                <div class="card-header bg-white">
+                    <h5 class="mb-0">Add New Topic</h5>
+                </div>
+                <div class="card-body">
+                    <form method="POST" action="{{ url_for('add_topic') }}">
+                        <div class="mb-3">
+                            <label for="name" class="form-label">Topic Name</label>
+                            <input type="text" class="form-control" id="name" name="name" required placeholder="e.g., Technology">
+                        </div>
+                        <div class="mb-3">
+                            <label for="keywords" class="form-label">Keywords (comma-separated)</label>
+                            <textarea class="form-control" id="keywords" name="keywords" rows="3" required placeholder="AI, machine learning, artificial intelligence, tech"></textarea>
+                            <small class="form-text text-muted">Enter relevant keywords separated by commas</small>
+                        </div>
+                        <button type="submit" class="btn btn-primary w-100">
+                            <i class="bi bi-plus-circle"></i> Add Topic
+                        </button>
+                    </form>
+                    
+                    <hr class="my-4">
+                    
+                    <div class="alert alert-light">
+                        <strong>Example Topics:</strong>
+                        <ul class="small mb-0 mt-2">
+                            <li><strong>Technology:</strong> AI, software, hardware, tech, innovation</li>
+                            <li><strong>Finance:</strong> stocks, market, economy, banking, investment</li>
+                            <li><strong>Politics:</strong> government, election, policy, legislation</li>
+                            <li><strong>Health:</strong> medical, healthcare, disease, treatment</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}
